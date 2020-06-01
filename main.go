@@ -27,5 +27,7 @@ func main() {
 	if err != nil {
 		log.Println("failed to get file error.")
 	}
-	fmt.Println(fileProc(files, *out, *num))
+	var fileInfos = fileProc(files, *out, *num)
+	fmt.Println(isDuplicates(fileInfos))
+
 }
