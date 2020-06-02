@@ -1,13 +1,15 @@
-package main
+package hash
 
 import (
 	"sync"
+
+	"github.com/teapod89/puffer/util/math"
 )
 
-func fileProc(files []string, out string, n int) []map[string]string {
+func Calculate(files []string, out string, n int) []map[string]string {
 	var info []map[string]string
 
-	maxExecutions := mathThreads(n)
+	maxExecutions := math.ThreadSum(n)
 
 	var wg = &sync.WaitGroup{}
 
@@ -15,7 +17,7 @@ func fileProc(files []string, out string, n int) []map[string]string {
 		wg.Add(1)
 		maxExecutions <- struct{}{}
 		go func(i int) {
-			info = append(info, mathHash(files[i]))
+			info = append(info, math.Hash(files[i]))
 			<-maxExecutions
 			wg.Done()
 		}(i)

@@ -1,4 +1,4 @@
-package main
+package math
 
 import (
 	"crypto/sha256"
@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-func mathHash(f string) map[string]string {
+func Hash(f string) map[string]string {
 	m := map[string]string{}
 	m["filename"] = f
 

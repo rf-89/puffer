@@ -1,6 +1,6 @@
-package main
+package evaluate
 
-func isDuplicates(fileInfo []map[string]string) []map[string]string {
+func Duplicates(fileInfo []map[string]string) []map[string]string {
 	var duplicates []map[string]string
 	const hashKey = "hash"
 	const fileKey = "filename"

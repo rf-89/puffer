@@ -4,6 +4,10 @@ import (
 	"flag"
 	"fmt"
 	"log"
+
+	"github.com/teapod89/puffer/evaluate"
+	"github.com/teapod89/puffer/files"
+	"github.com/teapod89/puffer/hash"
 )
 
 func main() {
@@ -23,11 +27,12 @@ func main() {
 		log.Fatalln("Please output the target file path.")
 	}
 
-	files, err := getFiles(*in)
+	files, err := files.Glob(*in)
+
 	if err != nil {
 		log.Println("failed to get file error.")
 	}
-	var fileInfos = fileProc(files, *out, *num)
-	fmt.Println(isDuplicates(fileInfos))
+	var fileInfos = hash.Calculate(files, *out, *num)
+	fmt.Println(evaluate.Duplicates(fileInfos))
 
 }
