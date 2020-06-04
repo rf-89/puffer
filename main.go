@@ -2,12 +2,13 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"log"
+	"path/filepath"
 
 	"github.com/teapod89/puffer/evaluate"
 	"github.com/teapod89/puffer/files"
 	"github.com/teapod89/puffer/hash"
+	"github.com/teapod89/puffer/report"
 )
 
 func main() {
@@ -23,7 +24,7 @@ func main() {
 		log.Fatalln("Please input the target directory name.")
 	}
 
-	if *out == "" {
+	if filepath.Ext(*out) != ".xlsx" {
 		log.Fatalln("Please output the target file path.")
 	}
 
@@ -33,6 +34,7 @@ func main() {
 		log.Println("failed to get file error.")
 	}
 	var fileInfos = hash.Calculate(files, *out, *num)
-	fmt.Println(evaluate.Duplicates(fileInfos))
+	var duplicates = evaluate.Duplicates(fileInfos)
+	report.Out(*out, duplicates)
 
 }
