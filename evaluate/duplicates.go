@@ -1,5 +1,9 @@
 package evaluate
 
+import (
+	"github.com/teapod89/puffer/util/list"
+)
+
 func Duplicates(fileInfo []map[string]string) []map[string]string {
 	var duplicates []map[string]string
 	const hashKey = "hash"
@@ -7,8 +11,8 @@ func Duplicates(fileInfo []map[string]string) []map[string]string {
 	for _, ref := range fileInfo {
 		for _, v := range fileInfo {
 			if ref[fileKey] != v[fileKey] && ref[hashKey] == v[hashKey] {
-				if mapArrayContains(duplicates, fileKey, v[fileKey]) ||
-					mapArrayContains(duplicates, hashKey, v[hashKey]) {
+				if list.MapArrayContains(duplicates, fileKey, v[fileKey]) ||
+					list.MapArrayContains(duplicates, hashKey, v[hashKey]) {
 					continue
 				}
 				m := map[string]string{}
@@ -22,14 +26,4 @@ func Duplicates(fileInfo []map[string]string) []map[string]string {
 		}
 	}
 	return duplicates
-}
-
-//配列の中に特定の文字列が含まれるかを返す
-func mapArrayContains(maps []map[string]string, key, str string) bool {
-	for _, v := range maps {
-		if v[key] == str {
-			return true
-		}
-	}
-	return false
 }
