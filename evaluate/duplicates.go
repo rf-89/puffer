@@ -1,6 +1,8 @@
 package evaluate
 
 import (
+	"sort"
+
 	"github.com/teapod89/puffer/util/list"
 )
 
@@ -15,10 +17,15 @@ func Duplicates(fileInfo []map[string]string) []map[string]string {
 					list.MapArrayContains(duplicates, hashKey, v[hashKey]) {
 					continue
 				}
+
+				//本来はfilename keyでソートすべきだが、ハッシュは同一で重複ファイルとみなすことができるためワークアラウンドとして本対応を行う。
+				var sorted []string = []string{ref[fileKey], v[fileKey]}
+				sort.Strings(sorted)
+
 				m := map[string]string{}
-				m[fileKey] = v[fileKey]
+				m[fileKey] = sorted[1]
 				m[hashKey] = v[hashKey]
-				m["duplicate_filename"] = ref[fileKey]
+				m["duplicate_filename"] = sorted[0]
 				m["duplicate_hash"] = ref[hashKey]
 				duplicates = append(duplicates, m)
 				continue
