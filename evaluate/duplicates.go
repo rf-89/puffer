@@ -1,5 +1,11 @@
 package evaluate
 
+import (
+	"sort"
+
+	"github.com/teapod89/puffer/util/list"
+)
+
 func Duplicates(fileInfo []map[string]string) []map[string]string {
 	var duplicates []map[string]string
 	const hashKey = "hash"
@@ -7,14 +13,19 @@ func Duplicates(fileInfo []map[string]string) []map[string]string {
 	for _, ref := range fileInfo {
 		for _, v := range fileInfo {
 			if ref[fileKey] != v[fileKey] && ref[hashKey] == v[hashKey] {
-				if mapArrayContains(duplicates, fileKey, v[fileKey]) ||
-					mapArrayContains(duplicates, hashKey, v[hashKey]) {
+				if list.MapArrayContains(duplicates, fileKey, v[fileKey]) ||
+					list.MapArrayContains(duplicates, hashKey, v[hashKey]) {
 					continue
 				}
+
+				//本来はfilename keyでソートすべきだが、ハッシュは同一で重複ファイルとみなすことができるためワークアラウンドとして本対応を行う。
+				var sorted []string = []string{ref[fileKey], v[fileKey]}
+				sort.Strings(sorted)
+
 				m := map[string]string{}
-				m[fileKey] = v[fileKey]
+				m[fileKey] = sorted[1]
 				m[hashKey] = v[hashKey]
-				m["duplicate_filename"] = ref[fileKey]
+				m["duplicate_filename"] = sorted[0]
 				m["duplicate_hash"] = ref[hashKey]
 				duplicates = append(duplicates, m)
 				continue
@@ -22,14 +33,4 @@ func Duplicates(fileInfo []map[string]string) []map[string]string {
 		}
 	}
 	return duplicates
-}
-
-//配列の中に特定の文字列が含まれるかを返す
-func mapArrayContains(maps []map[string]string, key, str string) bool {
-	for _, v := range maps {
-		if v[key] == str {
-			return true
-		}
-	}
-	return false
 }

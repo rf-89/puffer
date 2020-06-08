@@ -6,9 +6,10 @@ import (
 	"path/filepath"
 
 	"github.com/teapod89/puffer/evaluate"
-	"github.com/teapod89/puffer/files"
+	"github.com/teapod89/puffer/fileinfo"
 	"github.com/teapod89/puffer/hash"
 	"github.com/teapod89/puffer/report"
+	"github.com/teapod89/puffer/util/file"
 )
 
 func main() {
@@ -28,13 +29,15 @@ func main() {
 		log.Fatalln("Please output the target file path.")
 	}
 
-	files, err := files.Glob(*in)
+	files, err := file.Glob(*in)
 
 	if err != nil {
 		log.Println("failed to get file error.")
 	}
-	var fileInfos = hash.Calculate(files, *out, *num)
-	var duplicates = evaluate.Duplicates(fileInfos)
-	report.Out(*out, duplicates)
 
+	var fileInfos = hash.Calculate(files, *out, *num)
+
+	var duplicates = evaluate.Duplicates(fileinfo.GetDirFiles(fileInfos))
+
+	report.Out(*out, duplicates)
 }
