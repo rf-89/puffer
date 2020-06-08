@@ -37,7 +37,7 @@ func main() {
 
 	var fileInfos = hash.Calculate(files, *out, *num)
 
-	var duplicates = evaluate.Duplicates(fileinfo.GetDirFiles(fileInfos))
+	dMaps, fnCount, dFnCount := evaluate.Duplicates(fileinfo.GetDirFiles(fileInfos))
 
-	report.Out(*out, duplicates)
+	report.Out(*out, dMaps, fnCount, dFnCount)
 }
