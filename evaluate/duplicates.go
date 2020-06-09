@@ -10,6 +10,7 @@ func Duplicates(fileInfo []map[string]string) ([]map[string]string, int, int) {
 	var duplicates []map[string]string
 	const hashKey = "hash"
 	const fileKey = "filename"
+	const directoryKey = "directory"
 	var fnCount, dFnCount int
 
 	for _, ref := range fileInfo {
@@ -33,9 +34,19 @@ func Duplicates(fileInfo []map[string]string) ([]map[string]string, int, int) {
 				}
 
 				m := map[string]string{}
-				m[fileKey] = fn
+
+				//階層形式のディレクトリが指定されている場合のワークアラウンド。
+				//ディレクトリ名が不一致の場合は、ソートしたファイル名を使用しない。
+				if ref[directoryKey] == v[directoryKey] {
+					m[fileKey] = fn
+					m["duplicate_filename"] = dFn
+				} else {
+					m[fileKey] = ref[fileKey]
+					m["duplicate_filename"] = v[fileKey]
+				}
+				m[directoryKey] = ref[directoryKey]
+				m["duplicate_directory"] = v[directoryKey]
 				m[hashKey] = v[hashKey]
-				m["duplicate_filename"] = dFn
 				m["duplicate_hash"] = ref[hashKey]
 				duplicates = append(duplicates, m)
 				continue
