@@ -44,6 +44,9 @@ func Out(f string, infos []map[string]string, fnCount, dFnCount int) error {
 		fh.SetCellValue("Sheet1", "C"+axisIndex, info["hash"])
 		fh.SetCellValue("Sheet1", "D"+axisIndex, info["duplicate_filename"])
 		fh.SetCellValue("Sheet1", "E"+axisIndex, info["duplicate_hash"])
+		fh.AddComment("Sheet1", "B"+axisIndex, `{"author":"system: ","text":"dir:`+info["directory"]+`"}`)
+		fh.AddComment("Sheet1", "D"+axisIndex, `{"author":"system: ","text":"dir:`+info["duplicate_directory"]+`"}`)
+
 	}
 	fh.SetCellStyle("Sheet1", "A"+strconv.Itoa(offset), "E"+strconv.Itoa(len(infos)+2), makeBodyStyle(fh))
 
