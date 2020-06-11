@@ -4,6 +4,7 @@ import (
 	"flag"
 	"log"
 	"path/filepath"
+	"sort"
 
 	"github.com/teapod89/puffer/evaluate"
 	"github.com/teapod89/puffer/fileinfo"
@@ -35,9 +36,15 @@ func main() {
 		log.Println("failed to get file error.")
 	}
 
-	var fileInfos = hash.Calculate(files, *out, *num)
+	fileInfos := hash.Calculate(files, *out, *num)
 
-	dMaps, fnCount, dFnCount := evaluate.Duplicates(fileinfo.GetDirFiles(fileInfos))
+	dirfiles := fileinfo.GetDirFiles(fileInfos)
+
+	sort.Slice(dirfiles, func(i, j int) bool {
+		return fileInfos[i]["directory"] < dirfiles[j]["directory"]
+	})
+
+	dMaps, fnCount, dFnCount := evaluate.Duplicates(fileinfo.GetDirFiles(dirfiles))
 
 	report.Out(*out, dMaps, fnCount, dFnCount)
 }
