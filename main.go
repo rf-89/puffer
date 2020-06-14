@@ -44,7 +44,7 @@ func main() {
 		return fileInfos[i]["directory"] < dirfiles[j]["directory"]
 	})
 
-	dMaps, fnCount, dFnCount := evaluate.Duplicates(fileinfo.GetDirFiles(dirfiles))
+	dMaps, fnCount, dFnCount := evaluate.Duplicates(dirfiles)
 
 	report.Out(*out, dMaps, fnCount, dFnCount)
 }
