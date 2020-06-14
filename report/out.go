@@ -19,7 +19,7 @@ func Out(f string, infos []map[string]string, fnCount, dFnCount int) error {
 	fh.SetCellValue("Sheet1", "A1", "Report")
 
 	//先頭行の見出し設定
-	fh.SetCellStyle("Sheet1", "A2", "E2", makeTitleStyle((fh)))
+	fh.SetCellStyle("Sheet1", "A2", "G2", makeTitleStyle((fh)))
 
 	//ヘッダー行の出力
 	fh.SetCellValue("Sheet1", "A2", "no")
@@ -27,7 +27,8 @@ func Out(f string, infos []map[string]string, fnCount, dFnCount int) error {
 	fh.SetCellValue("Sheet1", "C2", "refer hash")
 	fh.SetCellValue("Sheet1", "D2", "duplicate file")
 	fh.SetCellValue("Sheet1", "E2", "duplicate hash")
-
+	fh.SetCellValue("Sheet1", "F2", "stat state")
+	fh.SetCellValue("Sheet1", "G2", "rm state")
 	//列幅の設定
 	widthOffset := 4
 	fh.SetColWidth("Sheet1", "C", "C", float64(70+widthOffset))
@@ -46,9 +47,20 @@ func Out(f string, infos []map[string]string, fnCount, dFnCount int) error {
 		fh.SetCellValue("Sheet1", "E"+axisIndex, info["duplicate_hash"])
 		fh.AddComment("Sheet1", "B"+axisIndex, `{"author":"system: ","text":"dir:`+info["directory"]+`"}`)
 		fh.AddComment("Sheet1", "D"+axisIndex, `{"author":"system: ","text":"dir:`+info["duplicate_directory"]+`"}`)
-
+		_, isStat := info["filestat"]
+		if isStat {
+			fh.SetCellValue("Sheet1", "F"+axisIndex, info["filestat"])
+		} else {
+			fh.SetCellValue("Sheet1", "F"+axisIndex, "-")
+		}
+		_, isRemove := info["fileremove"]
+		if isRemove {
+			fh.SetCellValue("Sheet1", "G"+axisIndex, info["fileremove"])
+		} else {
+			fh.SetCellValue("Sheet1", "G"+axisIndex, "-")
+		}
 	}
-	fh.SetCellStyle("Sheet1", "A"+strconv.Itoa(offset), "E"+strconv.Itoa(len(infos)+2), makeBodyStyle(fh))
+	fh.SetCellStyle("Sheet1", "A"+strconv.Itoa(offset), "G"+strconv.Itoa(len(infos)+2), makeBodyStyle(fh))
 
 	// シート1をアクティブにする。
 	fh.SetActiveSheet(index)

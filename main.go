@@ -9,15 +9,17 @@ import (
 	"github.com/teapod89/puffer/evaluate"
 	"github.com/teapod89/puffer/fileinfo"
 	"github.com/teapod89/puffer/hash"
+	"github.com/teapod89/puffer/remove"
 	"github.com/teapod89/puffer/report"
 	"github.com/teapod89/puffer/util/file"
 )
 
 func main() {
 	var (
-		in  = flag.String("in", "", "input directory path.")
-		out = flag.String("out", "", "output file path.")
-		num = flag.Int("num", 1, "maximum parallel number.")
+		in   = flag.String("in", "", "input directory path.")
+		out  = flag.String("out", "", "output file path.")
+		mode = flag.String("mode", "search", "search or delete")
+		num  = flag.Int("num", 1, "maximum parallel number.")
 	)
 
 	flag.Parse()
@@ -26,7 +28,7 @@ func main() {
 		log.Fatalln("Please input the target directory name.")
 	}
 
-	if filepath.Ext(*out) != ".xlsx" {
+	if *mode == "search" && filepath.Ext(*out) != ".xlsx" {
 		log.Fatalln("Please output the target file path.")
 	}
 
@@ -44,7 +46,12 @@ func main() {
 		return fileInfos[i]["directory"] < dirfiles[j]["directory"]
 	})
 
-	dMaps, fnCount, dFnCount := evaluate.Duplicates(fileinfo.GetDirFiles(dirfiles))
+	maps, fnCount, dFnCount := evaluate.Duplicates(dirfiles)
 
-	report.Out(*out, dMaps, fnCount, dFnCount)
+	if *mode == "remove" {
+		maps = remove.DoRemoveFiles(maps)
+	}
+	if *out != "" {
+		report.Out(*out, maps, fnCount, dFnCount)
+	}
 }
