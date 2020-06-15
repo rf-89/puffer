@@ -1,7 +1,6 @@
 package remove
 
 import (
-	"fmt"
 	"sync"
 
 	"github.com/teapod89/puffer/util/file"
