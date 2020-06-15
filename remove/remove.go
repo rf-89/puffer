@@ -17,7 +17,6 @@ func DoRemoveFiles(files []map[string]string) []map[string]string {
 			m := make(map[string]string)
 
 			m = files[i]
-			fmt.Println(files[i])
 			f := m["duplicate_filename"]
 			d := m["duplicate_directory"]
 			//パス名を生成
